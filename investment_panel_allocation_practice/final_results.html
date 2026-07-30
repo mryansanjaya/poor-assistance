@@ -2,7 +2,7 @@
 {% load otree static %}
 
 {% block title %}
-    <title>Hasil Akhir Investment Panel Allocation</title>
+    <title>Sesi Latihan - Hasil Akhir Latihan Investment Panel Allocation</title>
 {% endblock %}
 
 {% block content %}
@@ -10,10 +10,10 @@
         <div class="card">
             <div class="card-body">
                 <div class="alert p-0 mb-0" role="alert">
-                    <h3 class="alert-heading">Hasil Akhir Investment Panel Allocation</h3>
+                    <h3 class="alert-heading">Hasil Akhir Latihan Investment Panel Allocation</h3>
                     <p>
-                        Selamat Anda telah menyelesaikan sesi eksperimen <strong>Investment Panel Allocation</strong>.
-                        Berikut di bawah ini hasil keseluruhan ronde sesi eksperimen Investment Panel Allocation:
+                        Selamat Anda telah menyelesaikan sesi latihan <strong>Investment Panel Allocation</strong>.
+                        Berikut di bawah ini hasil keseluruhan ronde sesi latihan Investment Panel Allocation:
                     </p>
                     <hr>
                     <table class="table">
@@ -32,7 +32,7 @@
                         <tbody>
                             {% for item in results_panel_allocation %}
                                 <tr>
-                                    <td>Ronde {% item.round_number_panel_allocation %}</td>
+                                    <td>Ronde Latihan {% item.round_number_panel_allocation %}</td>
                                     <td class="fw-bold">
                                         {% if item.profit_panel_allocation != 0 %}
                                             <span class="text-success">+{% item.profit_panel_allocation %}</span>

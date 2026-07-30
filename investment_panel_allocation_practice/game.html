@@ -2,15 +2,14 @@
 {% load otree static %}
 
 {% block title %}
-    <title>Investment Panel Allocation - Ronde {% player.round_number %}</title>
-{% endblock %}
-
-{% block styles %}
-    <link rel="stylesheet" href="{% static 'global/style.css' %}">
+    <title>Sesi Latihan - Investment Panel Allocation - Ronde {% player.round_number %}</title>
 {% endblock %}
 
 {% block content %}
     <div class="container mb-3">
+        <div class="alert alert-warning" role="alert">
+            <h3 class="m-0 text-center">Sesi Latihan Eksperimen</h3>
+        </div>
         <div class="card">
             <div class="card-header">
                 <h4 class="m-0">Informasi Pendapatan</h4>
@@ -51,19 +50,19 @@
     </div>
     <div class="card">
         <div class="card-header">
-            <span class="badge bg-success fs-6 me-2">
-                Ronde: {% player.round_number %}
+            <span class="badge bg-warning text-dark fs-6 me-2">
+                Ronde Latihan: {% player.round_number %}
             </span>
             <span class="badge bg-danger fs-6 me-2">
-                Uang Anda saat ini: {% player.uang_sesudah_tambah_bansos %}
+                Uang Ronde Latihan: {% player.uang_sesudah_tambah_bansos %}
             </span>
-            <span class="badge bg-primary fs-6">
-                Anda adalah Player {% my_id %}
-            </span>
+<!--            <span class="badge bg-primary fs-6">-->
+<!--                Anda adalah Player -->
+<!--            </span>-->
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-8">
+                <div class="col-12">
                     <div class="card-text">
                         <div class="p-0">
                             <h2>Investment Panel Allocation</h2>
@@ -132,26 +131,26 @@
                         </form>
                     </div>
                 </div>
-                <div class="col-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                Informasi Realtime Peserta
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <table class="table table-bordered m-0">
-                                <thead>
-                                    <tr>
-                                        <th>List Peserta</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="realtime-table"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+<!--                <div class="col-4">-->
+<!--                    <div class="card">-->
+<!--                        <div class="card-header">-->
+<!--                            <h5 class="mb-0">-->
+<!--                                Informasi Realtime Peserta-->
+<!--                            </h5>-->
+<!--                        </div>-->
+<!--                        <div class="card-body">-->
+<!--                            <table class="table table-bordered m-0">-->
+<!--                                <thead>-->
+<!--                                    <tr>-->
+<!--                                        <th>List Peserta</th>-->
+<!--                                        <th>Status</th>-->
+<!--                                    </tr>-->
+<!--                                </thead>-->
+<!--                                <tbody id="realtime-table"></tbody>-->
+<!--                            </table>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
         </div>
         <div class="card-footer">
@@ -162,91 +161,91 @@
         </div>
     </div>
 
-    <script>
-        const myPlayerId = {% my_id %};
-        const form = document.querySelector("form");
+<!--    <script>-->
 
-        function getBadge(status){
-            switch(status){
-                case "Sudah Masuk Halaman":
-                    return '<span class="badge bg-primary">Sudah Masuk Halaman</span>';
-                case "Sedang Mengalokasikan Dana":
-                    return '<span class="badge bg-success">Sedang Mengalokasikan Dana</span>';
-                case "Player telah mengalokasikan dana":
-                    return '<span class="badge bg-success">Telah melakukan investasi</span>';
-                case "Player tidak mengalokasikan dana":
-                    return '<span class="badge bg-warning text-dark">Tidak melakukan investasi</span>';
-                default:
-                    return '<span class="badge bg-secondary">Belum Masuk Halaman</span>';
-            }
-        }
+<!--        const form = document.querySelector("form");-->
 
-        function getAllocations(){
-            const allocations = {};
+<!--        function getBadge(status){-->
+<!--            switch(status){-->
+<!--                case "Sudah Masuk Halaman":-->
+<!--                    return '<span class="badge bg-primary">Sudah Masuk Halaman</span>';-->
+<!--                case "Sedang Mengalokasikan Dana":-->
+<!--                    return '<span class="badge bg-success">Sedang Mengalokasikan Dana</span>';-->
+<!--                case "Player telah mengalokasikan dana":-->
+<!--                    return '<span class="badge bg-success">Telah melakukan investasi</span>';-->
+<!--                case "Player tidak mengalokasikan dana":-->
+<!--                    return '<span class="badge bg-warning text-dark">Tidak melakukan investasi</span>';-->
+<!--                default:-->
+<!--                    return '<span class="badge bg-secondary">Belum Masuk Halaman</span>';-->
+<!--            }-->
+<!--        }-->
 
-            document.querySelectorAll(".allocation-input").forEach(function(input){
-                allocations[input.name] = Number(input.value) || 0;
-            });
+<!--        function getAllocations(){-->
+<!--            const allocations = {};-->
 
-            return allocations;
-        }
+<!--            document.querySelectorAll(".allocation-input").forEach(function(input){-->
+<!--                allocations[input.name] = Number(input.value) || 0;-->
+<!--            });-->
 
-        document.addEventListener("DOMContentLoaded", function(){
-            liveSend({
-                action: "page_loaded"
-            });
+<!--            return allocations;-->
+<!--        }-->
 
-        });
+<!--        document.addEventListener("DOMContentLoaded", function(){-->
+<!--            liveSend({-->
+<!--                action: "page_loaded"-->
+<!--            });-->
 
-        document.querySelectorAll(".allocation-input").forEach(function(input){
-            input.addEventListener("input", function(){
+<!--        });-->
 
-                liveSend({
-                    action: "allocation_changed",
-                    allocations: getAllocations()
-                });
-            });
-        });
+<!--        document.querySelectorAll(".allocation-input").forEach(function(input){-->
+<!--            input.addEventListener("input", function(){-->
 
-        form.addEventListener("submit", function(e){
-            e.preventDefault();
+<!--                liveSend({-->
+<!--                    action: "allocation_changed",-->
+<!--                    allocations: getAllocations()-->
+<!--                });-->
+<!--            });-->
+<!--        });-->
 
-            liveSend({
-                action: "submit",
-                allocations: getAllocations()
-            });
+<!--        form.addEventListener("submit", function(e){-->
+<!--            e.preventDefault();-->
 
-            setTimeout(function(){
-                form.submit();
-            }, 100);
+<!--            liveSend({-->
+<!--                action: "submit",-->
+<!--                allocations: getAllocations()-->
+<!--            });-->
 
-        });
+<!--            setTimeout(function(){-->
+<!--                form.submit();-->
+<!--            }, 100);-->
 
-        liveRecv = function(data){
-            if(!data.players){
-                return;
-            }
+<!--        });-->
 
-            let html="";
-            data.players.forEach(function(p){
-                html += `
-                    <tr>
-                        <td>
-                            Player ${p.id}
-                            ${
-                                p.id===myPlayerId
-                                ? '<span class="badge bg-primary ms-2">Anda</span>'
-                                : ''
-                            }
-                        </td>
-                        <td>
-                            ${getBadge(p.status)}
-                        </td>
-                    </tr>
-                `;
-            });
+<!--        liveRecv = function(data){-->
+<!--            if(!data.players){-->
+<!--                return;-->
+<!--            }-->
 
-            document.getElementById("realtime-table").innerHTML = html;
-        };
-    </script>
+<!--            let html="";-->
+<!--            data.players.forEach(function(p){-->
+<!--                html += `-->
+<!--                    <tr>-->
+<!--                        <td>-->
+<!--                            Player ${p.id}-->
+<!--                            ${-->
+<!--                                p.id===myPlayerId-->
+<!--                                ? '<span class="badge bg-primary ms-2">Anda</span>'-->
+<!--                                : ''-->
+<!--                            }-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                            ${getBadge(p.status)}-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                `;-->
+<!--            });-->
+
+<!--            document.getElementById("realtime-table").innerHTML = html;-->
+<!--        };-->
+<!--    </script>-->
 {% endblock %}

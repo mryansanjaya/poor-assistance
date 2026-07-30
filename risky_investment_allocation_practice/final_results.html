@@ -2,20 +2,23 @@
 {% load otree static %}
 
 {% block title %}
-    <title>Hasil Akhir Risky Investment Allocation</title>
+    <title>Sesi Latihan - Hasil Akhir Latihan Risky Investment Allocation</title>
 {% endblock %}
 
 {% block content %}
     <div class="container">
+        <div class="alert alert-warning" role="alert">
+            <h3 class="m-0 text-center">Sesi Latihan Eksperimen</h3>
+        </div>
         <div class="card mb-3">
             <div class="card-body">
                 <div class="alert p-0 mb-0" role="alert">
-                    <h3 class="alert-heading">Hasil Akhir Risky Investment Allocation</h3>
+                    <h3 class="alert-heading">Hasil Akhir Latihan Risky Investment Allocation</h3>
                     <p>
-                        Selamat Anda telah menyelesaikan sesi eksperimen <strong>Risky Investment Allocation</strong>.
-                        Selanjutnya Anda akan memasuki sesi eksperimen berikutnya yaitu
+                        Selamat Anda telah menyelesaikan sesi latihan <strong>Risky Investment Allocation</strong>.
+                        Selanjutnya Anda akan memasuki sesi latihan berikutnya yaitu
                         <strong>Real Effort - Decoding</strong>. Berikut di bawah ini hasil keseluruhan ronde sesi
-                        eksperimen Risky Investment Allocation:
+                        latihan Risky Investment Allocation:
                     </p>
                     <hr>
                     <table class="table">
@@ -32,7 +35,7 @@
                         <tbody>
                             {% for item in results_risky_allocation %}
                                 <tr>
-                                    <td>Ronde {% item.round_number_risky_allocation %}</td>
+                                    <td>Ronde Latihan {% item.round_number_risky_allocation %}</td>
                                     <td class="fw-bold">
                                         {% if item.profit_risky_allocation != 0 %}
                                             <span class="text-success">+{% item.profit_risky_allocation %}</span>
@@ -78,7 +81,7 @@
             </div>
             <div class="card-footer">
                 <button class="otree-btn-next btn btn-outline-primary">
-                    <span>Lanjut menuju sesi eksperimen selanjutnya</span>
+                    <span>Lanjut menuju sesi latihan selanjutnya</span>
                     <i class="fa-solid fa-circle-arrow-right ms-1"></i>
                 </button>
             </div>

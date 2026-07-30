@@ -2,15 +2,18 @@
 {% load otree static %}
 
 {% block title %}
-    <title>Hasil Ronde {% player.round_number %} - Risky Investment Allocation</title>
+    <title>Sesi Latihan - Hasil Ronde {% player.round_number %} - Risky Investment Purchase</title>
 {% endblock %}
 
 {% block content %}
     <div class="container">
+        <div class="alert alert-warning" role="alert">
+            <h3 class="m-0 text-center">Sesi Latihan Eksperimen</h3>
+        </div>
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title text-center m-0">
-                    Hasil Ronde {% player.round_number %} - Risky Investment Allocation
+                    Hasil Ronde Latihan {% player.round_number %} - Risky Investment Purchase
                 </h3>
             </div>
             <div class="card-body">
@@ -19,27 +22,23 @@
                         <thead>
                             <tr>
                                 <th scope="col">List Opsi Investasi</th>
-                                <th scope="col">Alokasi Anda x Keuntungan Opsi</th>
                                 <th scope="col">Profit/Keuntungan</th>
+                                <th scope="col">Biaya Opsi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for item in allocations %}
+                            {% for item in options %}
                                 <tr>
                                     <td>Opsi {% item.no %}</td>
                                     <td class="fw-bold">
                                         {% if item.result != 0 %}
-                                            {% item.allocation %} x <span class="text-success">{{ item.result }}</span>
+                                            <span class="text-success">+{% item.result %}</span>
                                         {% else %}
-                                            {% item.allocation %} x {% item.result %}
+                                            {% item.result %}
                                         {% endif %}
                                     </td>
                                     <td class="fw-bold">
-                                        {% if item.profit != 0 %}
-                                            <span class="text-success">+{{ item.profit }}</span>
-                                        {% else %}
-                                            {% item.profit %}
-                                        {% endif %}
+                                        <span class="text-danger">-{% Constants.cost_per_option %}</span>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -49,7 +48,7 @@
                         <thead>
                             <th scope="col">Uang Anda</th>
                             <th scope="col">Total Profit/Keuntungan</th>
-                            <th scope="col">Alokasi yang dikeluarkan</th>
+                            <th scope="col">Biaya Beli Opsi</th>
                             <th scope="col">Beban Konsumsi</th>
                             <th scope="col">Sisa Uang Anda</th>
                         </thead>
@@ -58,7 +57,7 @@
                                 <td class="fw-bold">
                                     {% if player.uang_sesudah_tambah_bansos < 0 %}
                                         <span class="text-danger">{% player.uang_sesudah_tambah_bansos %}</span>
-                                    {% elif player.uang_sesudah_tambah_bansos >= 0%}
+                                    {% elif player.uang_sesudah_tambah_bansos >= 0 %}
                                         {% player.uang_sesudah_tambah_bansos %}
                                     {% endif %}
                                 </td>
@@ -70,10 +69,10 @@
                                     {% endif %}
                                 </td>
                                 <td class="fw-bold">
-                                    {% if player.total_alokasi_opsi != 0 %}
-                                        <span class="text-danger">-{% player.total_alokasi_opsi %}</span>
+                                    {% if player.total_biaya_beli_opsi != 0 %}
+                                        <span class="text-danger">-{% player.total_biaya_beli_opsi %}</span>
                                     {% else %}
-                                        {% player.total_alokasi_opsi %}
+                                        {% player.total_biaya_beli_opsi %}
                                     {% endif %}
                                 </td>
                                 <td class="fw-bold">
@@ -89,7 +88,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    {% if player.total_alokasi_opsi == 0 %}
+                    {% if player.total_biaya_beli_opsi == 0 %}
                         <div class="alert alert-primary" role="alert">
                             <strong>
                                 Anda tidak melakukan investasi pada ronde ini.
@@ -97,11 +96,11 @@
                         </div>
                     {% endif %}
                     {% if player.round_number != Constants.num_rounds %}
-                        <div class="alert alert-success m-0" role="alert">
-                            <strong>
-                                Sisa uang Anda pada ronde ini akan digunakan pada ronde selanjutnya.
-                            </strong>
-                        </div>
+                    <div class="alert alert-success m-0" role="alert">
+                        <strong>
+                            Sisa uang Anda pada ronde ini akan digunakan pada ronde selanjutnya.
+                        </strong>
+                    </div>
                     {% endif %}
                 </div>
             </div>

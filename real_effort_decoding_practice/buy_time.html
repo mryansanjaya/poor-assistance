@@ -2,15 +2,14 @@
 {% load otree static %}
 
 {% block title %}
-    <title>Durasi Waktu - Real Effort Decoding - Ronde {% player.round_number %}</title>
-{% endblock %}
-
-{% block styles %}
-    <link rel="stylesheet" href="{% static 'global/style.css' %}">
+    <title>Sesi Latihan - Durasi Waktu - Real Effort Decoding - Ronde {% player.round_number %}</title>
 {% endblock %}
 
 {% block content %}
     <div class="container mb-3">
+        <div class="alert alert-warning" role="alert">
+            <h3 class="m-0 text-center">Sesi Latihan Eksperimen</h3>
+        </div>
         <div class="card">
             <div class="card-header">
                 <h4 class="m-0">Informasi Pendapatan</h4>
@@ -50,18 +49,18 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-8">
+        <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <span class="badge bg-success fs-6 me-2">
-                        Ronde: {% player.round_number %}
+                    <span class="badge bg-warning text-dark fs-6 me-2">
+                        Ronde Latihan: {% player.round_number %}
                     </span>
                     <span class="badge bg-danger fs-6 me-2">
-                        Uang Anda saat ini: {% player.uang_sesudah_tambah_bansos %}
+                        Uang Ronde Latihan: {% player.uang_sesudah_tambah_bansos %}
                     </span>
-                    <span class="badge bg-primary fs-6">
-                        Anda adalah Player {% my_id %}
-                    </span>
+<!--                    <span class="badge bg-primary fs-6">-->
+<!--                        Anda adalah Player -->
+<!--                    </span>-->
                 </div>
                 <div class="card-body">
                     <form method="post">
@@ -125,94 +124,94 @@
                 </div>
             </div>
         </div>
-        <div class="col-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Informasi Realtime Peserta</h5>
-                </div>
-                <div class="card-body">
-                    <table class="table table-bordered m-0">
-                        <thead>
-                            <tr>
-                                <th>List Peserta</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="realtime-table"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+<!--        <div class="col-4">-->
+<!--            <div class="card">-->
+<!--                <div class="card-header">-->
+<!--                    <h5 class="mb-0">Informasi Realtime Peserta</h5>-->
+<!--                </div>-->
+<!--                <div class="card-body">-->
+<!--                    <table class="table table-bordered m-0">-->
+<!--                        <thead>-->
+<!--                            <tr>-->
+<!--                                <th>List Peserta</th>-->
+<!--                                <th>Status</th>-->
+<!--                            </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody id="realtime-table"></tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
     </div>
 
-    <script>
-        const myPlayerId = {% my_id %};
-        const form = document.querySelector("form");
+<!--    <script>-->
 
-        function getBadge(status){
-            switch(status){
-                case "Sudah Masuk Halaman":
-                    return '<span class="badge bg-primary">Sudah Masuk Halaman</span>';
-                case "Sedang Mengalokasikan Dana":
-                    return '<span class="badge bg-info">Sedang Membeli Waktu</span>';
-                case "Player membeli waktu bermain":
-                    return '<span class="badge bg-success">Telah membeli waktu dan sedang proses berinvestasi</span>';
-                case "Player tidak membeli waktu bermain":
-                    return '<span class="badge bg-warning text-dark">Tidak membeli waktu dan tidak berinvestasi</span>';
-                default:
-                    return '<span class="badge bg-secondary">Belum Masuk Halaman</span>';
-            }
-        }
+<!--        const form = document.querySelector("form");-->
 
-        document.addEventListener("DOMContentLoaded", function(){
-            liveSend({
-                action:"page_loaded"
-            });
-        });
+<!--        function getBadge(status){-->
+<!--            switch(status){-->
+<!--                case "Sudah Masuk Halaman":-->
+<!--                    return '<span class="badge bg-primary">Sudah Masuk Halaman</span>';-->
+<!--                case "Sedang Mengalokasikan Dana":-->
+<!--                    return '<span class="badge bg-info">Sedang Membeli Waktu</span>';-->
+<!--                case "Player membeli waktu bermain":-->
+<!--                    return '<span class="badge bg-success">Telah membeli waktu dan sedang proses berinvestasi</span>';-->
+<!--                case "Player tidak membeli waktu bermain":-->
+<!--                    return '<span class="badge bg-warning text-dark">Tidak membeli waktu dan tidak berinvestasi</span>';-->
+<!--                default:-->
+<!--                    return '<span class="badge bg-secondary">Belum Masuk Halaman</span>';-->
+<!--            }-->
+<!--        }-->
 
-        document.getElementById("beli_waktu").addEventListener("input", function(){
-            liveSend({
-                action:"allocation_changed",
-                allocation:Number(this.value || 0)
-            });
-        });
+<!--        document.addEventListener("DOMContentLoaded", function(){-->
+<!--            liveSend({-->
+<!--                action:"page_loaded"-->
+<!--            });-->
+<!--        });-->
 
-        form.addEventListener("submit", function(e){
-            e.preventDefault();
+<!--        document.getElementById("beli_waktu").addEventListener("input", function(){-->
+<!--            liveSend({-->
+<!--                action:"allocation_changed",-->
+<!--                allocation:Number(this.value || 0)-->
+<!--            });-->
+<!--        });-->
 
-            liveSend({
-                action:"submit_buy_time",
-                allocation:Number(document.getElementById("beli_waktu").value || 0)
-            });
+<!--        form.addEventListener("submit", function(e){-->
+<!--            e.preventDefault();-->
 
-            setTimeout(function(){
-                form.submit();
-            },100);
-        });
+<!--            liveSend({-->
+<!--                action:"submit_buy_time",-->
+<!--                allocation:Number(document.getElementById("beli_waktu").value || 0)-->
+<!--            });-->
 
-        liveRecv = function(data){
-            if(!data.players){
-                return;
-            }
+<!--            setTimeout(function(){-->
+<!--                form.submit();-->
+<!--            },100);-->
+<!--        });-->
 
-            let html="";
-            data.players.forEach(function(p){
-                html += `
-                    <tr>
-                        <td>
-                            Player ${p.id}
-                            ${
-                                p.id===myPlayerId
-                                ? '<span class="badge bg-primary ms-2">Anda</span>'
-                                : ''
-                            }
-                        </td>
-                        <td>${getBadge(p.status)}</td>
-                    </tr>
-                `;
-            });
+<!--        liveRecv = function(data){-->
+<!--            if(!data.players){-->
+<!--                return;-->
+<!--            }-->
 
-            document.getElementById("realtime-table").innerHTML = html;
-        }
-    </script>
+<!--            let html="";-->
+<!--            data.players.forEach(function(p){-->
+<!--                html += `-->
+<!--                    <tr>-->
+<!--                        <td>-->
+<!--                            Player ${p.id}-->
+<!--                            ${-->
+<!--                                p.id===myPlayerId-->
+<!--                                ? '<span class="badge bg-primary ms-2">Anda</span>'-->
+<!--                                : ''-->
+<!--                            }-->
+<!--                        </td>-->
+<!--                        <td>${getBadge(p.status)}</td>-->
+<!--                    </tr>-->
+<!--                `;-->
+<!--            });-->
+
+<!--            document.getElementById("realtime-table").innerHTML = html;-->
+<!--        }-->
+<!--    </script>-->
 {% endblock %}
