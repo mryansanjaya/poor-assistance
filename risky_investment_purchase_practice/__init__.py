@@ -47,13 +47,13 @@ class Subsession(BaseSubsession):
     pass
 
 
-# def creating_session(subsession):
-#     players = subsession.get_players()
-#     random_ids = list(range(1, len(players) + 1))
-#     random.shuffle(random_ids)
-#
-#     for player, random_id in zip(players, random_ids):
-#         player.round_player_id = random_id
+def creating_session(subsession):
+    players = subsession.get_players()
+    random_ids = list(range(1, len(players) + 1))
+    random.shuffle(random_ids)
+
+    for player, random_id in zip(players, random_ids):
+        player.round_player_id = random_id
 
 
 class Group(BaseGroup):
@@ -82,69 +82,73 @@ class Player(BasePlayer):
     total_akhir_bantuan_sosial = models.CurrencyField(initial=0)
     total_akhir_beban_konsumsi = models.CurrencyField(initial=0)
     total_akhir_uang = models.CurrencyField(initial=0)
-    # realtime_status = models.StringField(initial="Belum Masuk Halaman")
-    # round_player_id = models.IntegerField()
+    realtime_status = models.StringField(initial="Belum Masuk Halaman")
+    round_player_id = models.IntegerField()
 
 
-# def live_update(player, data):
-#     if data["action"] == "page_loaded":
-#         player.realtime_status = "Sudah Masuk Halaman"
-#
-#         players = [
-#             dict(
-#                 id=p.id_in_group,
-#                 status=p.realtime_status,
-#             )
-#             for p in player.group.get_players()
-#         ]
-#
-#         return {
-#             0: {
-#                 "players": players
-#             }
-#         }
-#
-#     elif data["action"] == "option_changed":
-#         if len(data["selected"]) > 0:
-#             player.realtime_status = "Sedang Berinvestasi"
-#         else:
-#             player.realtime_status = "Sudah Masuk Halaman"
-#
-#         players = [
-#             dict(
-#                 id=p.id_in_group,
-#                 status=p.realtime_status,
-#             )
-#             for p in player.group.get_players()
-#         ]
-#
-#         return {
-#             0: {
-#                 "players": players
-#             }
-#         }
-#
-#     elif data["action"] == "submit":
-#         selected = data.get("selected", [])
-#
-#         if len(selected) > 0:
-#             player.realtime_status = "Player telah berinvestasi"
-#         else:
-#             player.realtime_status = "Player tidak berinvestasi"
-#
-#         players = [
-#             dict(
-#                 id=p.id_in_group,
-#                 status=p.realtime_status,
-#             )
-#             for p in player.group.get_players()
-#         ]
-#
-#         return {
-#             0: {
-#                 "players": players
-#             }
-#         }
+def live_update(player, data):
+    if data["action"] == "page_loaded":
+        player.realtime_status = "Sudah Masuk Halaman"
+
+        players = [
+            dict(
+                id=p.id_in_group,
+                status=p.realtime_status,
+            )
+            for p in player.group.get_players()
+        ]
+
+        return {
+            0: {
+                "players": players
+            }
+        }
+
+    elif data["action"] == "option_changed":
+        if len(data["selected"]) > 0:
+            player.realtime_status = "Sedang Berinvestasi"
+        else:
+            player.realtime_status = "Sudah Masuk Halaman"
+
+        players = [
+            dict(
+                id=p.id_in_group,
+                status=p.realtime_status,
+            )
+            for p in player.group.get_players()
+        ]
+
+        return {
+            0: {
+                "players": players
+            }
+        }
+
+    elif data["action"] == "submit":
+        selected = data.get("selected", [])
+
+        if len(selected) > 0:
+            player.realtime_status = "Player telah berinvestasi"
+        else:
+            player.realtime_status = "Player tidak berinvestasi"
+
+        players = [
+            dict(
+                id=p.id_in_group,
+                status=p.realtime_status,
+            )
+            for p in player.group.get_players()
+        ]
+
+        return {
+            0: {
+                "players": players
+            }
+        }
+
+
+class Loading(WaitPage):
+    title_text = "Ruang Tunggu Eksperimen"
 
 
 class endowment_information(Page):
@@ -168,7 +172,7 @@ class game(Page):
     form_fields = ['opsi_1', 'opsi_2', 'opsi_3',
                    'opsi_4', 'opsi_5']
 
-    # live_method = 'live_update'
+    live_method = live_update
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -200,7 +204,7 @@ class game(Page):
 
         return {
             'random_options': random_options,
-            # 'my_id': player.round_player_id,
+            'my_id': player.round_player_id,
         }
 
     @staticmethod
@@ -276,8 +280,9 @@ class single_results(Page):
         player.total_biaya_beli_opsi = total_cost
 
         # Simpan hasil ronde
-        player.participant.vars.setdefault("results_risky_purchase", []).append({
+        player.participant.vars.setdefault("results_risky_purchase_practice", []).append({
             "round_number_risky_purchase": player.round_number,
+            "endowment_round": player.uang_sesudah_tambah_bansos,
             "profit_risky_purchase": player.total_profit,
             "cost_risky_purchase": player.total_biaya_beli_opsi,
             "endowment_risky_purchase": player.payoff,
@@ -294,10 +299,11 @@ class final_results(Page):
     @staticmethod
     def vars_for_template(player: Player):
         participant = player.participant
-        results_risky_purchase = participant.vars.get("results_risky_purchase", [])
+        results_risky_purchase = participant.vars.get("results_risky_purchase_practice", [])
+
 
         last_round_risky_purchase = (
-            participant.vars.get("last_round_played_risky_purchase", 1)
+            participant.vars.get("last_round_played_risky_purchase_practice", 1)
             if participant.vars.get("end_game", False)
             else player.round_number
         )
@@ -309,10 +315,26 @@ class final_results(Page):
         player.total_akhir_beban_konsumsi = sum(item["consumption_risky_purchase"] for item in results_risky_purchase)
         player.total_akhir_uang = sum(item["endowment_risky_purchase"] for item in results_risky_purchase)
 
+        participant.vars["summary_risky_purchase_practice"] = {
+            "profit": player.total_akhir_profit,
+            "cost": player.total_akhir_beli_opsi,
+            "additional": player.total_akhir_bantuan_sosial,
+            "consumption": player.total_akhir_beban_konsumsi,
+            "endowment": player.total_akhir_uang,
+            "payment_selected": player.in_round(player.round_number).payoff,
+        }
+
         return {
-            "results_risky_purchase": results_risky_purchase,
-            "last_round_played_risky_purchase": last_round_risky_purchase,
+            "results_risky_purchase_practice": results_risky_purchase,
+            "last_round_played_risky_purchase_practice": last_round_risky_purchase,
+            "final_payment_practice": player.in_round(player.round_number).payoff,
         }
 
 
-page_sequence = [endowment_information, game, single_results, final_results]
+class end_practice(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == Constants.num_rounds
+
+
+page_sequence = [endowment_information, Loading, game, single_results, Loading, final_results, end_practice]

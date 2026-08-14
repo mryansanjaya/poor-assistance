@@ -9,7 +9,7 @@ Risky Investment Allocation
 class Constants(BaseConstants):
     name_in_url = 'risky_investment_allocation'
     players_per_group = None
-    num_rounds = 10
+    num_rounds = 2
     endowment = cu(100)
     additional = cu(30)
     consumption = cu(50)
@@ -181,7 +181,7 @@ class game(Page):
         'opsi_5', 'alokasi_opsi_5',
     ]
 
-    live_method = live_update # dirubah karna versi oTree berbeda
+    live_method = live_update
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -240,8 +240,7 @@ class game(Page):
                     setattr(player, f"hasil_opsi_{i}", outcome)
                     break
 
-        player.total_profit = sum(
-            getattr(player, f"alokasi_opsi_{i}") *
+        player.total_profit = sum(getattr(player, f"alokasi_opsi_{i}") *
             getattr(player, f"hasil_opsi_{i}")
             for i in range(1, 6)
         )
@@ -287,6 +286,7 @@ class single_results(Page):
 
         player.participant.vars.setdefault("results_risky_allocation", []).append({
             "round_number_risky_allocation": player.round_number,
+            "endowment_round": player.uang_sesudah_tambah_bansos,
             "profit_risky_allocation": player.total_profit,
             "cost_risky_allocation": player.total_alokasi_opsi,
             "endowment_risky_allocation": player.payoff,
@@ -326,12 +326,19 @@ class final_results(Page):
             "additional": player.total_akhir_bantuan_sosial,
             "consumption": player.total_akhir_beban_konsumsi,
             "endowment": player.total_akhir_uang,
+            "payment_selected": player.in_round(player.round_number).payoff,
         }
 
         return {
             "results_risky_allocation": results_risky_allocation,
             "last_round_risky_allocation": last_round_risky_allocation,
+            "final_payment": player.in_round(player.round_number).payoff,
         }
 
+class end_session(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == Constants.num_rounds
 
-page_sequence = [endowment_information, Loading, game, single_results, Loading, final_results]
+
+page_sequence = [endowment_information, Loading, game, single_results, Loading, final_results, end_session]

@@ -2,7 +2,7 @@
 {% load otree static %}
 
 {% block title %}
-    <title>Sesi Latihan - Hasil Akhir Latihan Investment Panel Allocation</title>
+    <title>Hasil Akhir Investment Panel Allocation</title>
 {% endblock %}
 
 {% block content %}
@@ -10,10 +10,10 @@
         <div class="card">
             <div class="card-body">
                 <div class="alert p-0 mb-0" role="alert">
-                    <h3 class="alert-heading">Hasil Akhir Latihan Investment Panel Allocation</h3>
+                    <h3 class="alert-heading">Hasil Akhir Investment Panel Allocation</h3>
                     <p>
-                        Selamat Anda telah menyelesaikan sesi latihan <strong>Investment Panel Allocation</strong>.
-                        Berikut di bawah ini hasil keseluruhan ronde sesi latihan Investment Panel Allocation:
+                        Selamat Anda telah menyelesaikan sesi eksperimen <strong>Investment Panel Allocation</strong>.
+                        Berikut di bawah ini hasil keseluruhan ronde sesi eksperimen Investment Panel Allocation:
                     </p>
                     <hr>
                     <table class="table">
@@ -21,6 +21,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col">Sesi Ronde</th>
+                                    <th scope="col">Uang Ronde</th>
                                     <th scope="col">Profit</th>
                                     <th scope="col">Alokasi Opsi</th>
                                     <th scope="col">Bantuan</th>
@@ -32,7 +33,8 @@
                         <tbody>
                             {% for item in results_panel_allocation %}
                                 <tr>
-                                    <td>Ronde Latihan {% item.round_number_panel_allocation %}</td>
+                                    <td>Ronde {% item.round_number_panel_allocation %}</td>
+                                    <td class="fw-bold">{% item.endowment_round %}</td>
                                     <td class="fw-bold">
                                         {% if item.profit_panel_allocation != 0 %}
                                             <span class="text-success">+{% item.profit_panel_allocation %}</span>
@@ -63,17 +65,19 @@
                                 </tr>
                             {% endfor %}
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Total</th>
-                                <th>{% player.total_akhir_profit_return %}</th>
-                                <th>{% player.total_akhir_alokasi_opsi %}</th>
-                                <th>{% player.total_akhir_bantuan_sosial %}</th>
-                                <th>{% player.total_akhir_beban_konsumsi %}</th>
-                                <th>{% player.total_akhir_uang %}</th>
-                            </tr>
-                        </tfoot>
                     </table>
+                    <div class="alert bg-success text-light m-0" role="alert">
+                        <h4 class="alert-heading">Informasi Pembayaran</h4>
+                        <p>
+                            Pembayaran akan dihitung berdasarkan jumlah Sisa Uang Akhir Ronde yang Anda miliki pada
+                            ronde terakhir.
+                        </p>
+                        <hr>
+                        <h5 class="m-0">
+                            Sisa Uang Akhir Ronde yang akan dihitung pada halaman pembayaran adalah
+                            {% final_payment %} (Ronde {% player.round_number %})
+                        </h5>
+                    </div>
                 </div>
             </div>
             <div class="card-footer">

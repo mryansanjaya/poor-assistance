@@ -45,13 +45,13 @@ class Constants(BaseConstants):
 class Subsession(BaseSubsession):
     pass
 
-# def creating_session(subsession):
-#     players = subsession.get_players()
-#     random_ids = list(range(1, len(players) + 1))
-#     random.shuffle(random_ids)
-#
-#     for player, random_id in zip(players, random_ids):
-#         player.round_player_id = random_id
+def creating_session(subsession):
+    players = subsession.get_players()
+    random_ids = list(range(1, len(players) + 1))
+    random.shuffle(random_ids)
+
+    for player, random_id in zip(players, random_ids):
+        player.round_player_id = random_id
 
 
 class Group(BaseGroup):
@@ -85,70 +85,74 @@ class Player(BasePlayer):
     total_akhir_bantuan_sosial = models.CurrencyField(initial=0)
     total_akhir_beban_konsumsi = models.CurrencyField(initial=0)
     total_akhir_uang = models.CurrencyField(initial=0)
-    # realtime_status = models.StringField(initial="Belum Masuk Halaman")
-    # round_player_id = models.IntegerField()
+    realtime_status = models.StringField(initial="Belum Masuk Halaman")
+    round_player_id = models.IntegerField()
 
-# def live_update(player, data):
-#     if data["action"] == "page_loaded":
-#         player.realtime_status = "Sudah Masuk Halaman"
-#
-#         players = [
-#             dict(
-#                 id=p.id_in_group,
-#                 status=p.realtime_status,
-#             )
-#             for p in player.group.get_players()
-#         ]
-#
-#         return {
-#             0: {
-#                 "players": players
-#             }
-#         }
-#
-#     elif data["action"] == "allocation_changed":
-#         allocations = data.get("allocations", {})
-#
-#         if sum(allocations.values()) > 0:
-#             player.realtime_status = "Sedang Mengalokasikan Dana"
-#         else:
-#             player.realtime_status = "Sudah Masuk Halaman"
-#
-#         players = [
-#             dict(
-#                 id=p.id_in_group,
-#                 status=p.realtime_status,
-#             )
-#             for p in player.group.get_players()
-#         ]
-#
-#         return {
-#             0: {
-#                 "players": players
-#             }
-#         }
-#
-#     elif data["action"] == "submit":
-#         allocations = data.get("allocations", {})
-#
-#         if sum(allocations.values()) > 0:
-#             player.realtime_status = "Player telah mengalokasikan dana"
-#         else:
-#             player.realtime_status = "Player tidak mengalokasikan dana"
-#
-#         players = [
-#             dict(
-#                 id=p.id_in_group,
-#                 status=p.realtime_status,
-#             )
-#             for p in player.group.get_players()
-#         ]
-#
-#         return {
-#             0: {
-#                 "players": players
-#             }
-#         }
+def live_update(player, data):
+    if data["action"] == "page_loaded":
+        player.realtime_status = "Sudah Masuk Halaman"
+
+        players = [
+            dict(
+                id=p.id_in_group,
+                status=p.realtime_status,
+            )
+            for p in player.group.get_players()
+        ]
+
+        return {
+            0: {
+                "players": players
+            }
+        }
+
+    elif data["action"] == "allocation_changed":
+        allocations = data.get("allocations", {})
+
+        if sum(allocations.values()) > 0:
+            player.realtime_status = "Sedang Mengalokasikan Dana"
+        else:
+            player.realtime_status = "Sudah Masuk Halaman"
+
+        players = [
+            dict(
+                id=p.id_in_group,
+                status=p.realtime_status,
+            )
+            for p in player.group.get_players()
+        ]
+
+        return {
+            0: {
+                "players": players
+            }
+        }
+
+    elif data["action"] == "submit":
+        allocations = data.get("allocations", {})
+
+        if sum(allocations.values()) > 0:
+            player.realtime_status = "Player telah mengalokasikan dana"
+        else:
+            player.realtime_status = "Player tidak mengalokasikan dana"
+
+        players = [
+            dict(
+                id=p.id_in_group,
+                status=p.realtime_status,
+            )
+            for p in player.group.get_players()
+        ]
+
+        return {
+            0: {
+                "players": players
+            }
+        }
+
+
+class Loading(WaitPage):
+    title_text = "Ruang Tunggu Eksperimen"
 
 
 class endowment_information(Page):
@@ -177,7 +181,7 @@ class game(Page):
         'opsi_5', 'alokasi_opsi_5',
     ]
 
-    # live_method = live_update
+    live_method = live_update
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -202,7 +206,7 @@ class game(Page):
 
         return {
             'random_options': random_options,
-            # 'my_id': player.round_player_id,
+            'my_id': player.round_player_id,
         }
 
     @staticmethod
@@ -236,8 +240,7 @@ class game(Page):
                     setattr(player, f"hasil_opsi_{i}", outcome)
                     break
 
-        player.total_profit = sum(
-            getattr(player, f"alokasi_opsi_{i}") *
+        player.total_profit = sum(getattr(player, f"alokasi_opsi_{i}") *
             getattr(player, f"hasil_opsi_{i}")
             for i in range(1, 6)
         )
@@ -281,8 +284,9 @@ class single_results(Page):
 
         player.total_alokasi_opsi = total_cost
 
-        player.participant.vars.setdefault("results_risky_allocation", []).append({
+        player.participant.vars.setdefault("results_risky_allocation_practice", []).append({
             "round_number_risky_allocation": player.round_number,
+            "endowment_round": player.uang_sesudah_tambah_bansos,
             "profit_risky_allocation": player.total_profit,
             "cost_risky_allocation": player.total_alokasi_opsi,
             "endowment_risky_allocation": player.payoff,
@@ -300,11 +304,11 @@ class final_results(Page):
     def vars_for_template(player: Player):
         participant = player.participant
         results_risky_allocation = participant.vars.get(
-            "results_risky_allocation", []
+            "results_risky_allocation_practice", []
         )
 
         last_round_risky_allocation = (
-            participant.vars.get("last_round_played_risky_allocation", 1)
+            participant.vars.get("last_round_played_risky_allocation_practice", 1)
             if participant.vars.get("end_game", False)
             else player.round_number
         )
@@ -316,18 +320,26 @@ class final_results(Page):
         player.total_akhir_beban_konsumsi = sum(item["consumption_risky_allocation"] for item in results_risky_allocation)
         player.total_akhir_uang = sum(item["endowment_risky_allocation"] for item in results_risky_allocation)
 
-        # participant.vars["summary_risky_allocation"] = {
-        #     "profit": player.total_akhir_profit,
-        #     "cost": player.total_akhir_alokasi_opsi,
-        #     "additional": player.total_akhir_bantuan_sosial,
-        #     "consumption": player.total_akhir_beban_konsumsi,
-        #     "endowment": player.total_akhir_uang,
-        # }
+        participant.vars["summary_risky_allocation_practice"] = {
+            "profit": player.total_akhir_profit,
+            "cost": player.total_akhir_alokasi_opsi,
+            "additional": player.total_akhir_bantuan_sosial,
+            "consumption": player.total_akhir_beban_konsumsi,
+            "endowment": player.total_akhir_uang,
+            "payment_selected": player.in_round(player.round_number).payoff,
+        }
 
         return {
-            "results_risky_allocation": results_risky_allocation,
-            "last_round_risky_allocation": last_round_risky_allocation,
+            "results_risky_allocation_practice": results_risky_allocation,
+            "last_round_risky_allocation_practice": last_round_risky_allocation,
+            "final_payment_practice": player.in_round(player.round_number).payoff,
         }
 
 
-page_sequence = [endowment_information, game, single_results, final_results]
+class end_practice(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == Constants.num_rounds
+
+
+page_sequence = [endowment_information, Loading, game, single_results, Loading, final_results, end_practice]

@@ -2,7 +2,7 @@
 {% load otree static %}
 
 {% block title %}
-    <title>Sesi Latihan - Hasil Akhir Latihan Real Effort Decoding</title>
+    <title>Hasil Akhir Latihan Real Effort Decoding</title>
 {% endblock %}
 
 {% block content %}
@@ -13,15 +13,15 @@
                     <h3 class="alert-heading">Hasil Akhir Latihan Real Effort Decoding</h3>
                     <p>
                         Selamat Anda telah menyelesaikan sesi latihan <strong>Real Effort - Decoding</strong>.
-                        Selanjutnya Anda akan memasuki sesi latihan berikutnya yaitu
-                        <strong>Investment Panel Allocation</strong>. Berikut di bawah ini hasil keseluruhan ronde sesi
-                        latihan Real Effort - Decoding:
+                        Selanjutnya Anda akan memasuki sesi eksperimen <strong>Real Effort - Decoding</strong>.
+                        Berikut di bawah ini hasil keseluruhan ronde sesi latihan Real Effort - Decoding:
                     </p>
                     <hr>
-                    <table class="table m-0">
+                    <table class="table">
                         <thead>
                             <tr>
-                                <th scope="col">Sesi Ronde</th>
+                                <th scope="col">Sesi Ronde Latihan</th>
+                                <th scope="col">Uang Ronde</th>
                                 <th scope="col">Skor</th>
                                 <th scope="col">Total Biaya Waktu</th>
                                 <th scope="col">Bantuan</th>
@@ -30,9 +30,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for result in results_cognitive_task %}
+                            {% for result in results_cognitive_task_practice %}
                                 <tr>
                                     <td>Ronde Latihan {% result.round_number_cognitive %}</td>
+                                    <td class="fw-bold">{% result.endowment_round %}</td>
                                     <td class="fw-bold">
                                         {% if result.score_cognitive != 0 %}
                                             <span class="text-success">+{% result.score_cognitive %}</span>
@@ -41,10 +42,10 @@
                                         {% endif %}
                                     </td>
                                     <td class="fw-bold">
-                                        {% if result.score_cognitive != 0 %}
+                                        {% if result.time_cost_cognitive != 0 %}
                                             <span class="text-danger">-{% result.time_cost_cognitive %}</span>
                                         {% else %}
-                                            {% result.score_cognitive %}
+                                            {% result.time_cost_cognitive %}
                                         {% endif %}
                                     </td>
                                     <td class="fw-bold">
@@ -63,22 +64,25 @@
                                 </tr>
                             {% endfor %}
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <th>Total</th>
-                                <th>{% player.total_akhir_score %}</th>
-                                <th>{% player.total_akhir_beli_waktu %}</th>
-                                <th>{% player.total_akhir_bantuan_sosial %}</th>
-                                <th>{% player.total_akhir_beban_konsumsi %}</th>
-                                <th>{% player.total_akhir_uang %}</th>
-                            </tr>
-                        </tfoot>
                     </table>
+                    <div class="alert bg-warning text-dark m-0" role="alert">
+                        <h4 class="alert-heading">Informasi Peserta</h4>
+                        <p>
+                            Pada sesi eksperimen, Anda akan mendapatkan Pembayaran dari salah satu sesi eksperimen.
+                            Pembayaran yang akan diambil sebagai acuan berdasarkan jumlah Sisa Uang Akhir Ronde yang
+                            Anda miliki pada ronde terakhir.
+                        </p>
+                        <hr>
+                        <h5 class="m-0">
+                            Maka Sisa Uang Akhir Ronde yang akan dihitung sebagai pembayaran pada sesi eksperimen adalah
+                            {% final_payment_practice %} (Ronde {% player.round_number %})
+                        </h5>
+                    </div>
                 </div>
             </div>
             <div class="card-footer">
                 <button class="otree-btn-next btn btn-outline-primary">
-                    <span>Lanjut menuju sesi latihan selanjutnya</span>
+                    <span>Lanjut menuju sesi eksperimen</span>
                     <i class="fa-solid fa-circle-arrow-right ms-1"></i>
                 </button>
             </div>

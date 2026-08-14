@@ -9,7 +9,7 @@ Risky Investment Purchase
 class Constants(BaseConstants):
     name_in_url = 'risky_investment_purchase'
     players_per_group = None
-    num_rounds = 10
+    num_rounds = 2
     endowment = cu(100)
     additional = cu(30)
     consumption = cu(50)
@@ -172,7 +172,7 @@ class game(Page):
     form_fields = ['opsi_1', 'opsi_2', 'opsi_3',
                    'opsi_4', 'opsi_5']
 
-    live_method = 'live_update'
+    live_method = live_update
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -282,6 +282,7 @@ class single_results(Page):
         # Simpan hasil ronde
         player.participant.vars.setdefault("results_risky_purchase", []).append({
             "round_number_risky_purchase": player.round_number,
+            "endowment_round": player.uang_sesudah_tambah_bansos,
             "profit_risky_purchase": player.total_profit,
             "cost_risky_purchase": player.total_biaya_beli_opsi,
             "endowment_risky_purchase": player.payoff,
@@ -299,6 +300,7 @@ class final_results(Page):
     def vars_for_template(player: Player):
         participant = player.participant
         results_risky_purchase = participant.vars.get("results_risky_purchase", [])
+
 
         last_round_risky_purchase = (
             participant.vars.get("last_round_played_risky_purchase", 1)
@@ -319,12 +321,20 @@ class final_results(Page):
             "additional": player.total_akhir_bantuan_sosial,
             "consumption": player.total_akhir_beban_konsumsi,
             "endowment": player.total_akhir_uang,
+            "payment_selected": player.in_round(player.round_number).payoff,
         }
 
         return {
             "results_risky_purchase": results_risky_purchase,
             "last_round_played_risky_purchase": last_round_risky_purchase,
+            "final_payment": player.in_round(player.round_number).payoff,
         }
 
 
-page_sequence = [endowment_information, Loading, game, single_results, Loading, final_results]
+class end_session(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == Constants.num_rounds
+
+
+page_sequence = [endowment_information, Loading, game, single_results, Loading, final_results, end_session]
