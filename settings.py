@@ -1,14 +1,5 @@
 from os import environ
 
-ROOMS = [
-    dict(
-        name='experiment',
-        display_name='Experiment',
-        participant_label_file='_rooms/econ101.txt',
-        use_secure_urls=True
-    ),
-]
-
 SESSION_CONFIGS = [
     dict(
         display_name='Eksperimen Bantuan Sosial',

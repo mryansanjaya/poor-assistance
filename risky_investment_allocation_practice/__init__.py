@@ -7,7 +7,7 @@ Risky Investment Allocation - Sesi Latihan
 
 
 class Constants(BaseConstants):
-    name_in_url = 'risky_investment_allocation_pratice'
+    name_in_url = 'risky_investment_allocation_practice'
     players_per_group = None
     num_rounds = 2
     endowment = cu(100)
@@ -244,7 +244,7 @@ class single_results(Page):
     def before_next_page(player: Player, timeout_happened):
         player.participant.vars.setdefault("results_risky_allocation_practice", []).append({
             "round_number_risky_allocation": player.round_number,
-            "endowment_round": player.uang_sesudah_tambah_bansos,
+            "endowment_round": player.uang_sebelum_tambah_bansos,
             "profit_risky_allocation": player.total_profit,
             "cost_risky_allocation": player.total_alokasi_opsi,
             "endowment_risky_allocation": player.payoff,
